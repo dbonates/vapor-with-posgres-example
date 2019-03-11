@@ -3,7 +3,6 @@ import Vapor
 import FluentPostgreSQL
 
 final class Acronym: Codable {
-    
     var id: Int?
     var short: String
     var long: String
