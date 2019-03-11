@@ -59,9 +59,22 @@ public func routes(_ router: Router) throws {
             throw Abort(.badRequest)
         }
         
-        return Acronym.query(on: req)
-        .filter(\.short == searchString)
-        .all()
+        return Acronym.query(on: req).group(.or) { or in
+            or.filter(\.short == searchString)
+            or.filter(\.long == searchString)
+            }.all()
     }
     
+    router.get("api", "acronyms", "first") { req -> Future<Acronym> in
+        
+        return Acronym.query(on: req)
+        .first()
+        .unwrap(or: Abort(.notFound))
+    }
+    
+    router.get("api", "acronyms", "sorted") { req -> Future<[Acronym]> in
+        return Acronym.query(on: req)
+            .sort(\.short, .ascending)
+            .all()
+    }
 }
