@@ -3,16 +3,6 @@ import Fluent
 
 /// Register your application's routes here.
 public func routes(_ router: Router) throws {
-    // Basic "It works" example
-    router.get { req in
-        return "It works!"
-    }
-    
-    // Basic "Hello, world!" example
-    router.get("hello") { req in
-        return "Hello, world!"
-    }
-
     
     // MARK: - CRUD
     
@@ -22,10 +12,7 @@ public func routes(_ router: Router) throws {
                 return acronym.save(on: req)
         }
     }
-    
-    router.get("api", "acronyms") { req -> Future<[Acronym]> in
-        return  Acronym.query(on: req).all()
-    }
+
     
     router.get("api", "acronyms", Acronym.parameter) { req -> Future<Acronym> in
         return  try req.parameters.next(Acronym.self)
@@ -77,4 +64,9 @@ public func routes(_ router: Router) throws {
             .sort(\.short, .ascending)
             .all()
     }
+    
+    // register controllers
+    
+    let acronymsController = AcronymsController()
+    try router.register(collection: acronymsController)
 }
